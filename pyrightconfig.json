@@ -1,0 +1,40 @@
+{
+    "include": [
+        "."
+    ],
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+        ".venv"
+    ],
+    "ignore": [
+        "**/migrations/*"
+    ],
+    "defineConstant": {
+        "DEBUG": true
+    },
+    "venvPath": ".",
+    "venv": ".venv",
+    "stubPath": "",
+    "reportMissingImports": true,
+    "reportMissingTypeStubs": false,
+    "reportImportCycles": false,
+    "reportMissingModuleSource": false,
+    "pythonVersion": "3.13",
+    "pythonPlatform": "Windows",
+    "executionEnvironments": [
+        {
+            "root": ".",
+            "pythonVersion": "3.13",
+            "pythonPlatform": "Windows",
+            "extraPaths": [
+                ".venv/Lib/site-packages"
+            ]
+        }
+    ],
+    "typings": [
+        "node_modules/@types",
+        "typings"
+    ],
+    "reportMissingTypeArgument": false
+}
