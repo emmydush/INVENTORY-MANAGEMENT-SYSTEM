@@ -38,7 +38,7 @@ This project includes the following files to facilitate deployment to Render:
    - Root Directory: Leave empty if the project is at the root of the repository
    - Environment: Python
    - Build Command: `pip install -r requirements.txt`
-   - Start Command: `gunicorn app.wsgi:application --bind 0.0.0.0:$PORT`
+   - Start Command: `gunicorn app:application --bind 0.0.0.0:$PORT`
 
 ### 3. Add Environment Variables
 

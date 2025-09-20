@@ -30,12 +30,10 @@ def main():
     # List of import statements that Render might be trying
     imports_to_test = [
         "import app",
-        "from app import wsgi",
-        "from app.wsgi import application",
-        "import application",
-        "from application import application",
-        "import app2",
-        "from app2 import application",
+        "from app import application",
+        "from inventory_management.wsgi import application",
+        "import ims",
+        "from ims import models",
     ]
     
     results = []

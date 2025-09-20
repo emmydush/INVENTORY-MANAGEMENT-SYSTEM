@@ -24,9 +24,9 @@ def simulate_render_import():
     # Try the import that Render might be attempting
     import_tests = [
         "import app",
-        "from app.wsgi import application",
-        "import app.wsgi",
-        "from app import wsgi",
+        "from app import application",
+        "import inventory_management.wsgi",
+        "from inventory_management.wsgi import application",
     ]
     
     for test in import_tests:
