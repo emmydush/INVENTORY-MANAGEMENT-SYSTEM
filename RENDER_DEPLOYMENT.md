@@ -17,6 +17,7 @@ This project includes the following files to facilitate deployment to Render:
 3. [runtime.txt](file:///E:/Best%20App/runtime.txt) - Specifies the Python version
 4. [.render-buildpacks](file:///E:/Best%20App/.render-buildpacks) - Specifies the buildpack to use
 5. [build.bat](file:///E:/Best%20App/build.bat) - Build script for Windows environments
+6. [app/](file:///E:/Best%20App/app/) - Module created to resolve "ModuleNotFoundError: No module named 'app'" error
 
 ## Deployment Steps
 
@@ -37,7 +38,7 @@ This project includes the following files to facilitate deployment to Render:
    - Root Directory: Leave empty if the project is at the root of the repository
    - Environment: Python
    - Build Command: `pip install -r requirements.txt`
-   - Start Command: `gunicorn inventory_management.wsgi:application --bind 0.0.0.0:$PORT`
+   - Start Command: `gunicorn app.wsgi:application --bind 0.0.0.0:$PORT`
 
 ### 3. Add Environment Variables
 
@@ -115,9 +116,8 @@ python manage.py migrate
 ### Common Issues
 
 1. **ModuleNotFoundError: No module named 'app'**
-   - This error occurs when Render is looking for an 'app' module that doesn't exist
-   - Ensure your [Procfile](file:///E:/Best%20App/Procfile) specifies the correct WSGI application path
-   - The correct path should be `inventory_management.wsgi:application`
+   - This error has been resolved by creating an 'app' module that proxies to the actual application
+   - The [app/](file:///E:/Best%20App/app/) directory contains the necessary files to satisfy this requirement
 
 2. **Database Connection Issues**
    - Verify that all database environment variables are correctly set

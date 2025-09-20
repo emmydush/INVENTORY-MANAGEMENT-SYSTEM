@@ -58,11 +58,18 @@ This project includes configuration files for deploying to Render:
 1. [Procfile](file:///E:/Best%20App/Procfile): Defines the command to run the application
 2. [render.yaml](file:///E:/Best%20App/render.yaml): Defines the Render service configuration
 3. [runtime.txt](file:///E:/Best%20App/runtime.txt): Specifies the Python version
+4. [app/](file:///E:/Best%20App/app/): Module created to resolve "ModuleNotFoundError: No module named 'app'" error
 
 To deploy to Render:
 1. Push your code to a GitHub repository
 2. Connect your repository to Render
 3. Render will automatically detect the configuration files and deploy the application
+
+For detailed deployment instructions, see [RENDER_DEPLOYMENT.md](file:///E:/Best%20App/RENDER_DEPLOYMENT.md)
+
+## Troubleshooting
+
+If you encounter the "ModuleNotFoundError: No module named 'app'" error or other deployment issues, see [TROUBLESHOOTING.md](file:///E:/Best%20App/TROUBLESHOOTING.md) for detailed troubleshooting steps.
 
 ## Advanced Settings
 
