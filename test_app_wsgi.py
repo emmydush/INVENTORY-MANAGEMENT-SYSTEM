@@ -19,11 +19,11 @@ def test_imports():
     print("Testing WSGI application imports...")
     
     try:
-        # Test importing from app module
-        from app.wsgi import application as app_application
-        print("✓ Successfully imported app.wsgi:application")
+        # Test importing from app module (app.py file, not app directory)
+        from app import application as app_application
+        print("✓ Successfully imported app:application")
     except Exception as e:
-        print(f"✗ Failed to import app.wsgi:application - {e}")
+        print(f"✗ Failed to import app:application - {e}")
         return False
     
     try:

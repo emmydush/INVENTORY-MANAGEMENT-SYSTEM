@@ -12,13 +12,14 @@ The error "ModuleNotFoundError: No module named 'app'" occurs when the deploymen
 
 ## Current Solution Status
 
-The "app" module has been created and is properly configured in this project. Verification tests show:
+The "app" module issue has been resolved by creating a simple [app.py](file:///E:/Best%20App/app.py) file that contains the WSGI application. This approach is more compatible with Render's expectations.
 
-- ✅ The app module can be imported successfully
-- ✅ The WSGI application can be imported from app.wsgi
-- ✅ The app module is registered in Django's INSTALLED_APPS
+Verification tests show:
+
+- ✅ The app.py file can be imported successfully
+- ✅ Both `from app import app` and `from app import application` work correctly
 - ✅ Django's check command reports no issues
-- ✅ The app module is properly loaded in Django
+- ✅ The build script runs successfully
 
 ## Verification Steps
 
@@ -26,13 +27,10 @@ To verify that the app module is correctly configured, run these commands from t
 
 ```bash
 # Test basic import
-python -c "import app; print('App module imported successfully')"
+python -c "from app import app; print('App imported successfully')"
 
-# Test WSGI application import
-python -c "from app.wsgi import application; print('WSGI application imported successfully')"
-
-# Test Django app loading
-python manage.py shell -c "from django.apps import apps; print('App loaded:', apps.is_installed('app'))"
+# Test alternative import
+python -c "from app import application; print('Application imported successfully')"
 
 # Run Django checks
 python manage.py check
@@ -44,47 +42,52 @@ All of these commands should execute without errors.
 
 ### 1. Missing App Module
 **Problem**: The app module doesn't exist
-**Solution**: Create the app module with the necessary files:
-- `__init__.py` - Makes it a Python package
-- `wsgi.py` - Contains the WSGI application
-- `apps.py` - Django app configuration
-- Other required files (models.py, views.py, etc.)
+**Solution**: Create a simple [app.py](file:///E:/Best%20App/app.py) file that contains the WSGI application:
+```python
+import os
+import sys
+from pathlib import Path
+
+# Add the project directory to Python path
+project_dir = Path(__file__).resolve().parent
+sys.path.insert(0, str(project_dir))
+
+# Set the Django settings module
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'inventory_management.settings')
+
+# Import the actual WSGI application
+from inventory_management.wsgi import application
+
+# Export the application
+app = application
+application = application
+__all__ = ['app', 'application']
+```
 
 ### 2. Incorrect Procfile Configuration
 **Problem**: The Procfile references the wrong module path
 **Solution**: Ensure the Procfile contains the correct command:
 ```
-web: gunicorn app.wsgi:application --bind 0.0.0.0:$PORT
+web: gunicorn app:app --bind 0.0.0.0:$PORT
 ```
 
-### 3. App Not Registered in INSTALLED_APPS
-**Problem**: The app module is not registered in Django settings
-**Solution**: Add 'app' to INSTALLED_APPS in settings.py:
-```python
-INSTALLED_APPS = [
-    # ... other apps
-    'ims',
-    'app',  # Add this line
-]
-```
-
-### 4. Python Path Issues
+### 3. Python Path Issues
 **Problem**: Python cannot find the app module due to path issues
-**Solution**: Ensure the project directory is in the Python path. The app/wsgi.py file should include:
+**Solution**: Ensure the project directory is in the Python path. The [app.py](file:///E:/Best%20App/app.py) file should include:
 ```python
 import sys
 from pathlib import Path
 
 # Add the project directory to Python path
-project_dir = Path(__file__).resolve().parent.parent
+project_dir = Path(__file__).resolve().parent
 sys.path.insert(0, str(project_dir))
 ```
 
-### 5. Import Errors in App Module
+### 4. Import Errors in App Module
 **Problem**: There are errors in the app module files that prevent loading
-**Solution**: Check all app module files for syntax errors or import issues:
-- Run `python -m py_compile app/wsgi.py` to check for syntax errors
-- Ensure all imports in app module files are correct
+**Solution**: Check the [app.py](file:///E:/Best%20App/app.py) file for syntax errors or import issues:
+- Run `python -m py_compile app.py` to check for syntax errors
+- Ensure all imports in the app.py file are correct
 
 ## Render-Specific Troubleshooting
 
@@ -101,14 +104,10 @@ DJANGO_SETTINGS_MODULE=inventory_management.settings
 ```
 
 ### 3. Check File Structure
-Verify that the app module directory exists in your repository:
+Verify that the [app.py](file:///E:/Best%20App/app.py) file exists in your repository:
 ```
 project/
-├── app/
-│   ├── __init__.py
-│   ├── wsgi.py
-│   ├── apps.py
-│   └── ...
+├── app.py  # This is what Render is looking for
 ├── inventory_management/
 └── ...
 ```
@@ -116,8 +115,10 @@ project/
 ### 4. Test Locally with Gunicorn
 Test the same command that Render uses locally:
 ```bash
-gunicorn app.wsgi:application --bind 0.0.0.0:8000
+gunicorn app:app --bind 0.0.0.0:8000
 ```
+
+Note: Gunicorn is not compatible with Windows, so this test will fail on Windows with a "fcntl" error, but it will work in the Render environment.
 
 ## Advanced Debugging
 
@@ -134,40 +135,23 @@ from pathlib import Path
 project_dir = Path(__file__).resolve().parent
 sys.path.insert(0, str(project_dir))
 
-# Set Django settings
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'inventory_management.settings')
-
 def test_all():
     print("Testing app module configuration...")
     
     # Test 1: Basic import
     try:
-        import app
+        from app import app
         print("✓ Basic import successful")
     except Exception as e:
         print(f"✗ Basic import failed: {e}")
         return False
     
-    # Test 2: WSGI import
+    # Test 2: Alternative import
     try:
-        from app.wsgi import application
-        print("✓ WSGI import successful")
+        from app import application
+        print("✓ Alternative import successful")
     except Exception as e:
-        print(f"✗ WSGI import failed: {e}")
-        return False
-    
-    # Test 3: Django setup
-    try:
-        import django
-        django.setup()
-        from django.apps import apps
-        if apps.is_installed('app'):
-            print("✓ Django app registration successful")
-        else:
-            print("✗ App not registered in Django")
-            return False
-    except Exception as e:
-        print(f"✗ Django setup failed: {e}")
+        print(f"✗ Alternative import failed: {e}")
         return False
     
     print("✓ All tests passed!")
@@ -185,8 +169,8 @@ services:
   - type: web
     name: inventory-management-system
     env: python
-    buildCommand: "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
-    startCommand: "gunicorn app.wsgi:application --bind 0.0.0.0:$PORT"
+    buildCommand: "build.bat"  # or "pip install -r requirements.txt && python manage.py collectstatic --noinput && python manage.py migrate"
+    startCommand: "gunicorn app:app --bind 0.0.0.0:$PORT"
 ```
 
 ## If Problems Persist
