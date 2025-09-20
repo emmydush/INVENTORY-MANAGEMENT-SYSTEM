@@ -51,6 +51,19 @@ python start_production.py
 
 Note: Gunicorn is not compatible with Windows. For true production deployment on Windows, consider using IIS with wfastcgi.
 
+## Deploying to Render
+
+This project includes configuration files for deploying to Render:
+
+1. [Procfile](file:///E:/Best%20App/Procfile): Defines the command to run the application
+2. [render.yaml](file:///E:/Best%20App/render.yaml): Defines the Render service configuration
+3. [runtime.txt](file:///E:/Best%20App/runtime.txt): Specifies the Python version
+
+To deploy to Render:
+1. Push your code to a GitHub repository
+2. Connect your repository to Render
+3. Render will automatically detect the configuration files and deploy the application
+
 ## Advanced Settings
 
 This system includes advanced configuration options accessible through the System Settings page. Only superusers can access these settings.
